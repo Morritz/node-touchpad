@@ -1,0 +1,126 @@
+<meta name="viewport" content="width=device-width, height=device-height,initial-scale=1.0">
+<style>
+html, body {margin: 0; padding: 0; height: 100%; overflow: hidden}
+#joystick-container {
+    border: solid 1px #000;
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+}
+#joystick {
+    width: 100px;
+    height: 100px;
+    margin: 1px;
+    cursor: crosshair;
+    height: 100%;
+    width: 100%;
+}
+#dot1 
+{
+    float:left;
+    position: relative;
+    height: 100px;
+    top: 0px;
+    width: 25vw;
+    background-color: gray;
+    margin: 0px;
+padding: 0px;
+outline: 5px solid black;
+}
+#dot2
+{
+    float:left;
+    position: relative;
+    height: 100px;
+    top: 0px;
+    width: 25vw;
+    background-color: gray;
+    margin: 0px;
+padding: 0px;
+outline: 5px solid black;
+}
+#dot3
+{
+    float:left;
+    position: relative;
+    height: 100px;
+    top: 0px;
+    width: 25vw;
+    background-color: gray;
+    margin: 0px;
+padding: 0px;
+outline: 5px solid black;
+}
+#dot4
+{
+    float:left;
+    position: relative;
+    height: 100px;
+    top: 0px;
+    width: 25vw;
+    background-color: gray;
+    margin: 0px;
+padding: 0px;
+outline: 5px solid black;
+}
+</style>
+<div id="joystick-container"><div id="joystick">
+<button id="dot1">Click</button>
+<button id="dot4">-</button>
+<button id="dot3">Enter</button>
+<button id="dot2">Keyboard</button>
+
+
+</div></div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script>
+var socket = io('192.168.1.102:3000');
+
+document.getElementById("dot1").addEventListener("click", function(){
+    socket.emit('click');
+});
+document.getElementById("dot2").addEventListener("click", function(){
+    var text = prompt();
+    socket.emit('keyboard', text);
+});
+document.getElementById("dot3").addEventListener("click", function(){
+    socket.emit('enter');
+});
+
+document.getElementById("dot4").addEventListener("click", function(){
+    socket.emit('backspace');
+});
+</script>
+
+<script>
+        var lastX, lastY;
+        var move = {
+           X: 0,
+           Y: 0
+        };
+    
+            var joystick = document.getElementById('joystick');
+            joystick.ontouchstart = function (event) {
+            if(event.touches) {
+                lastX = event.touches[0].clientX; - joystick.getBoundingClientRect().left;
+                lastY = event.touches[0].clientY; - joystick.getBoundingClientRect().top;
+            }
+        }
+        joystick.ontouchmove = function (event) {
+            if(event.touches) {
+    
+                let x = event.touches[0].clientX; - joystick.getBoundingClientRect().left;
+                let y = event.touches[0].clientY; - joystick.getBoundingClientRect().top;
+    
+                move.X = x - lastX;
+                move.Y = y - lastY;
+                socket.emit('move', move);
+    
+                lastX = x;
+                lastY = y;
+            }
+        };
+        
+        </script>
